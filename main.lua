@@ -16,6 +16,8 @@ function Ball:new()
     o = {
         x = VIRTUAL_WIDTH / 2 - 2,
         y = VIRTUAL_HEIGHT / 2 - 2,
+        height = 4,
+        width = 4,
         x_velocity = (math.random(2) == 1 and 100 or -100),
         y_velocity = math.random(-50, 50)
     }
@@ -26,7 +28,7 @@ function Ball:new()
 end
 function Ball:move(delta_time)
     if self:checkFloorCollision() then
-        self.y_velocity = self.y_velocity * (-1)
+        self:collide()
     end
 
     self.x = self.x + self.x_velocity * delta_time
@@ -35,6 +37,9 @@ end
 function Ball:checkFloorCollision()
     return (self.y >= BOUNDS_MAX_Y or self.y <= BOUNDS_MIN_Y)
 end
+function Ball:collide()
+    self.y_velocity = self.y_velocity * (-1)
+end
 function Ball:resetPosition()
     -- TODO: call Ball:new or something else, as this is duplicate
     self.x = VIRTUAL_WIDTH / 2 - 2
@@ -42,10 +47,20 @@ function Ball:resetPosition()
     self.x_velocity = (math.random(2) == 1 and 100 or -100)
     self.y_velocity = math.random(-50, 50)
 end
+function Ball:draw()
+    love.graphics.rectangle('fill', self.x, self.y, self.width, self.height)
+end
 
 local Player = {}
-function Player:new(o)
-    o = { score = 0, y = 0, speed = 200 }
+function Player:new()
+    o = {
+        score = 0,
+        x = 0,
+        y = 0,
+        width = 5,
+        height = 20,
+        speed = 200
+    }
 
     setmetatable(o, self)
     self.__index = self
@@ -58,8 +73,11 @@ function Player:move(direction, delta_time)
         self.y = math.min(BOUNDS_MAX_Y, self.y + self.speed * delta_time)
     end
 end
-function Player:score()
+function Player:incrementScore()
     self.score = self.score + 1
+end
+function Player:draw()
+    love.graphics.rectangle('fill', self.x, self.y, self.width, self.height)
 end
 
 function love.load()
@@ -78,9 +96,11 @@ function love.load()
     })
 
     player_1 = Player:new()
+    player_1.x = 10
     player_1.y = 30
 
     player_2 = Player:new()
+    player_2.x = (VIRTUAL_WIDTH - 10)
     player_2.y = (VIRTUAL_HEIGHT - 50)
 
     ball = Ball:new()
@@ -99,11 +119,19 @@ function love.update(delta_time)
         player_2:move('down', delta_time)
     end
 
+    -- collision check
+    -- TODO: area vs coordinate
+    if (ball.x == player_1.x) and (ball.y == player_1.y) then
+        ball:collide()
+    elseif (ball.x == player_2.x) and (ball.y == player_2.y) then
+        ball:collide()
+    end
+
     if ball.x >= BOUNDS_MAX_X then
-        player_1.score()
+        player_1:incrementScore()
         ball:resetPosition()
     elseif ball.x <= BOUNDS_MIN_X then
-        player_2.score()
+        player_2:incrementScore()
         ball:resetPosition()
     end
 
@@ -122,9 +150,10 @@ function love.draw()
     love.graphics.printf('Pong!', 0, 20, VIRTUAL_WIDTH, 'center')
 
     drawScores()
-    drawPaddles()
 
-    love.graphics.rectangle('fill', ball.x, ball.y, 4, 4)
+    player_1:draw()
+    player_2:draw()
+    ball:draw()
 
     push:apply('end')
 end
@@ -141,9 +170,4 @@ function drawScores()
         VIRTUAL_WIDTH / 2 + 30,
         VIRTUAL_HEIGHT / 3
     )
-end
-
-function drawPaddles()
-    love.graphics.rectangle('fill', 10, player_1.y, 5, 20)
-    love.graphics.rectangle('fill', VIRTUAL_WIDTH - 10, player_2.y, 5, 20)
 end

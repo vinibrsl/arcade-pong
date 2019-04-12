@@ -58,6 +58,9 @@ function Player:move(direction, delta_time)
         self.y = math.min(BOUNDS_MAX_Y, self.y + self.speed * delta_time)
     end
 end
+function Player:score()
+    self.score = self.score + 1
+end
 
 function love.load()
     math.randomseed(os.time())
@@ -97,10 +100,10 @@ function love.update(delta_time)
     end
 
     if ball.x >= BOUNDS_MAX_X then
-        player_1.score = player_1.score + 1
+        player_1.score()
         ball:resetPosition()
     elseif ball.x <= BOUNDS_MIN_X then
-        player_2.score = player_2.score + 1
+        player_2.score()
         ball:resetPosition()
     end
 

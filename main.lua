@@ -40,7 +40,7 @@ end
 function Ball:collide()
     self.y_velocity = self.y_velocity * (-1)
 end
-function Ball:resetPosition()
+function Ball:reset()
     -- TODO: call Ball:new or something else, as this is duplicate
     self.x = VIRTUAL_WIDTH / 2 - 2
     self.y = VIRTUAL_HEIGHT / 2 - 2
@@ -129,10 +129,10 @@ function love.update(delta_time)
 
     if ball.x >= BOUNDS_MAX_X then
         player_1:incrementScore()
-        ball:resetPosition()
+        ball:reset()
     elseif ball.x <= BOUNDS_MIN_X then
         player_2:incrementScore()
-        ball:resetPosition()
+        ball:reset()
     end
 
     ball:move(delta_time)

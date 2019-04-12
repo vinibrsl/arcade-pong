@@ -24,6 +24,24 @@ function Ball:new()
     self.__index = self
     return o
 end
+function Ball:move(delta_time)
+    if self:checkFloorCollision() then
+        self.y_velocity = self.y_velocity * (-1)
+    end
+
+    self.x = self.x + self.x_velocity * delta_time
+    self.y = self.y + self.y_velocity * delta_time
+end
+function Ball:checkFloorCollision()
+    return (self.y >= BOUNDS_MAX_Y or self.y <= BOUNDS_MIN_Y)
+end
+function Ball:resetPosition()
+    -- TODO: call Ball:new or something else, as this is duplicate
+    self.x = VIRTUAL_WIDTH / 2 - 2
+    self.y = VIRTUAL_HEIGHT / 2 - 2
+    self.x_velocity = (math.random(2) == 1 and 100 or -100)
+    self.y_velocity = math.random(-50, 50)
+end
 
 local Player = {}
 function Player:new(o)
@@ -33,7 +51,6 @@ function Player:new(o)
     self.__index = self
     return o
 end
-
 function Player:move(direction, delta_time)
     if direction == 'up' then
         self.y = math.max(BOUNDS_MIN_Y, self.y + -self.speed * delta_time)
@@ -79,20 +96,15 @@ function love.update(delta_time)
         player_2:move('down', delta_time)
     end
 
-    if ball.y >= BOUNDS_MAX_Y or ball.y <= BOUNDS_MIN_Y then
-        ball.y_velocity = ball.y_velocity * (-1)
-    end
-
     if ball.x >= BOUNDS_MAX_X then
         player_1.score = player_1.score + 1
-        ball = Ball:new()
+        ball:resetPosition()
     elseif ball.x <= BOUNDS_MIN_X then
         player_2.score = player_2.score + 1
-        ball = Ball:new()
+        ball:resetPosition()
     end
 
-    ball.x = ball.x + ball.x_velocity * delta_time
-    ball.y = ball.y + ball.y_velocity * delta_time
+    ball:move(delta_time)
 end
 
 function love.keypressed(key)

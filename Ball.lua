@@ -16,20 +16,18 @@ function Ball:collide()
     self.x_speed = -self.x_speed
 end
 
-function Ball:checkFloorCollision()
-    return (self.y >= BOUNDS_MAX_Y or self.y <= BOUNDS_MIN_Y)
-end
-
-function Ball:checkOutOfBoundsSide()
+function Ball:checkWallCollision()
     if (self.x + self.width) >= BOUNDS_MAX_X then
         return 'left'
     elseif (self.x - self.width) <= BOUNDS_MIN_X then
         return 'right'
+    elseif (self.y >= BOUNDS_MAX_Y) or (self.y <= BOUNDS_MIN_Y) then
+        return 'floor'
     end
 end
 
 function Ball:update(delta_time)
-    if self:checkFloorCollision() then
+    if self:checkWallCollision() == 'floor' then
         self:collide()
     end
 

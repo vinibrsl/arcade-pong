@@ -68,7 +68,7 @@ function love.update(delta_time)
         player_2:update('down', delta_time)
     end
 
-    local ballCollisionSide = ball:checkOutOfBoundsSide()
+    local ballCollisionSide = ball:checkWallCollision()
     if ballCollisionSide == 'left' then
         player_1:incrementScore()
         ball:reset()

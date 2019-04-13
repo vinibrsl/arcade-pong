@@ -33,6 +33,28 @@ function love.load()
     ball = Ball((VIRTUAL_WIDTH / 2 - 2), (VIRTUAL_HEIGHT / 2 - 2), 4, 4)
 end
 
+function drawHud()
+    love.graphics.printf('Pong!', 0, 20, VIRTUAL_WIDTH, 'center')
+
+    love.graphics.print(
+        tostring(player_1.score),
+        VIRTUAL_WIDTH / 2 - 50,
+        VIRTUAL_HEIGHT / 3
+    )
+
+    love.graphics.print(
+        tostring(player_2.score),
+        VIRTUAL_WIDTH / 2 + 30,
+        VIRTUAL_HEIGHT / 3
+    )
+end
+
+function love.keypressed(key)
+    if key == 'escape' then
+        love.event.quit()
+    end
+end
+
 function love.update(delta_time)
     if love.keyboard.isDown('w') then
         player_1:update('up', delta_time)
@@ -61,36 +83,13 @@ function love.update(delta_time)
     ball:update(delta_time)
 end
 
-function love.keypressed(key)
-    if key == 'escape' then
-        love.event.quit()
-    end
-end
-
 function love.draw()
     push:apply('start')
 
-    love.graphics.printf('Pong!', 0, 20, VIRTUAL_WIDTH, 'center')
-
-    drawScores()
-
+    drawHud()
     player_1:draw()
     player_2:draw()
     ball:draw()
 
     push:apply('end')
-end
-
-function drawScores()
-    love.graphics.print(
-        tostring(player_1.score),
-        VIRTUAL_WIDTH / 2 - 50,
-        VIRTUAL_HEIGHT / 3
-    )
-
-    love.graphics.print(
-        tostring(player_2.score),
-        VIRTUAL_WIDTH / 2 + 30,
-        VIRTUAL_HEIGHT / 3
-    )
 end

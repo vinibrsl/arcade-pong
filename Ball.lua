@@ -12,19 +12,12 @@ function Ball:init(x, y, width, height)
 end
 
 function Ball:collide()
-    self.y_speed = self.y_speed * (-1)
-    self.x_speed = self.x_speed * (-1)
+    self.y_speed = -self.y_speed
+    self.x_speed = -self.x_speed
 end
 
 function Ball:checkFloorCollision()
     return (self.y >= BOUNDS_MAX_Y or self.y <= BOUNDS_MIN_Y)
-end
-
-function Ball:checkPaddleCollision(paddle)
-    return (self.x >= paddle.x) and
-           (self.x <= (paddle.x + paddle.width)) and
-           (self.y >= paddle.y) and
-           (self.y <= (paddle.y + paddle.height))
 end
 
 function Ball:update(delta_time)

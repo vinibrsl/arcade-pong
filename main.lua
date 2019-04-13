@@ -76,7 +76,7 @@ function love.update(delta_time)
         ball:reset()
     end
 
-    if ball:checkPaddleCollision(player_1) or ball:checkPaddleCollision(player_2) then
+    if ball:checkCollision(player_1) or ball:checkCollision(player_2) then
         ball:collide()
     end
 

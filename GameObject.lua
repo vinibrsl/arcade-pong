@@ -11,6 +11,13 @@ GameObject = Class{
     end
 }
 
+function GameObject:checkCollision(other)
+    return (self.x >= other.x) and
+        (self.x <= (other.x + other.width)) and
+        (self.y >= other.y) and
+        (self.y <= (other.y + other.height))
+end
+
 function GameObject:draw()
     love.graphics.rectangle('fill', self.x, self.y, self.width, self.height)
 end

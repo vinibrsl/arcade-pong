@@ -5,11 +5,12 @@ function Player:init(x, y, width, height)
         x = x,
         y = y,
         width = width,
-        height = height
+        height = height,
+        x_speed = 0.0,
+        y_speed = 200.0
     })
 
     self.score = 0
-    self.speed = 150
 end
 
 function Player:incrementScore()
@@ -18,9 +19,9 @@ end
 
 function Player:update(direction, delta_time)
     if direction == 'up' then
-        self.y = math.max(BOUNDS_MIN_Y, self.y + -self.speed * delta_time)
+        self.y = math.max(BOUNDS_MIN_Y, self.y + -self.y_speed * delta_time)
     elseif direction == 'down' then
-        self.y = math.min(BOUNDS_MAX_Y, self.y + self.speed * delta_time)
+        self.y = math.min(BOUNDS_MAX_Y, self.y + self.y_speed * delta_time)
     end
 end
 

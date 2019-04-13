@@ -10,15 +10,6 @@ function Ball:init(x, y, width, height)
     self.y_velocity = math.random(-50, 50)
 end
 
-function Ball:update(delta_time)
-    if self:checkFloorCollision() then
-        self:collide()
-    end
-
-    self.x = self.x + self.x_velocity * delta_time
-    self.y = self.y + self.y_velocity * delta_time
-end
-
 function Ball:collide()
     self.y_velocity = self.y_velocity * (-1)
     self.x_velocity = self.x_velocity * (-1)
@@ -29,13 +20,19 @@ function Ball:checkFloorCollision()
 end
 
 function Ball:checkPaddleCollision(paddle)
-    if (self.x >= paddle.x) and (self.x <= (paddle.x + paddle.width)) then
-        if (self.y >= paddle.y) and (self.y <= (paddle.y + paddle.height)) then
-            return true
-        end
+    return (self.x >= paddle.x) and
+           (self.x <= (paddle.x + paddle.width)) and
+           (self.y >= paddle.y) and
+           (self.y <= (paddle.y + paddle.height))
+end
+
+function Ball:update(delta_time)
+    if self:checkFloorCollision() then
+        self:collide()
     end
 
-    return false
+    self.x = self.x + self.x_velocity * delta_time
+    self.y = self.y + self.y_velocity * delta_time
 end
 
 function Ball:reset()

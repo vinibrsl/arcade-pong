@@ -34,15 +34,15 @@ end
 
 function love.update(delta_time)
     if love.keyboard.isDown('w') then
-        player_1:move('up', delta_time)
+        player_1:update('up', delta_time)
     elseif love.keyboard.isDown('s') then
-        player_1:move('down', delta_time)
+        player_1:update('down', delta_time)
     end
 
     if love.keyboard.isDown('up') then
-        player_2:move('up', delta_time)
+        player_2:update('up', delta_time)
     elseif love.keyboard.isDown('down') then
-        player_2:move('down', delta_time)
+        player_2:update('down', delta_time)
     end
 
     if ball.x >= BOUNDS_MAX_X then
@@ -57,7 +57,7 @@ function love.update(delta_time)
         ball:collide()
     end
 
-    ball:move(delta_time)
+    ball:update(delta_time)
 end
 
 function love.keypressed(key)

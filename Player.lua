@@ -10,7 +10,7 @@ function Player:init(x, y, width, height)
     self.speed = 200
 end
 
-function Player:move(direction, delta_time)
+function Player:update(direction, delta_time)
     if direction == 'up' then
         self.y = math.max(BOUNDS_MIN_Y, self.y + -self.speed * delta_time)
     elseif direction == 'down' then

@@ -10,7 +10,7 @@ function Ball:init(x, y, width, height)
     self.y_velocity = math.random(-50, 50)
 end
 
-function Ball:move(delta_time)
+function Ball:update(delta_time)
     if self:checkFloorCollision() then
         self:collide()
     end

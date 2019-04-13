@@ -1,5 +1,6 @@
 push = require './vendor/push'
 Class = require './vendor/class'
+require 'GameObject'
 require 'Player'
 require 'Ball'
 

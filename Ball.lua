@@ -1,11 +1,7 @@
-Ball = Class{}
+Ball = Class{__includes = GameObject}
 
 function Ball:init(x, y, width, height)
-    self.x = x
-    self.y = y
-    self.width = width
-    self.height = height
-
+    GameObject.init(self, x, y, width, height)
     self.x_velocity = (math.random(2) == 1 and 100 or -100)
     self.y_velocity = math.random(-50, 50)
 end

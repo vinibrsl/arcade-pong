@@ -24,7 +24,3 @@ function Player:update(direction, delta_time)
         self.y = math.min(BOUNDS_MAX_Y, self.y + self.y_speed * delta_time)
     end
 end
-
-function Player:draw()
-    love.graphics.rectangle('fill', self.x, self.y, self.width, self.height)
-end

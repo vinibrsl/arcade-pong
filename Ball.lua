@@ -42,7 +42,3 @@ function Ball:reset()
     self.x_speed = (math.random(2) == 1 and 100 or -100)
     self.y_speed = math.random(-50, 50)
 end
-
-function Ball:draw()
-    love.graphics.rectangle('fill', self.x, self.y, self.width, self.height)
-end

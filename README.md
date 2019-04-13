@@ -1,5 +1,5 @@
 # Pong!
 
-![](https://raw.githubusercontent.com/vnbrs/arcade-pong/master/.github/thumb.png?sanitize=true&raw=true)
+![](https://github.com/vnbrs/arcade-pong/raw/master/.github/thumb.png)
 
 This is an implementation of Pong using Lua and LÖVE2D.

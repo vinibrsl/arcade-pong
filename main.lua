@@ -34,11 +34,21 @@ function Ball:move(delta_time)
     self.x = self.x + self.x_velocity * delta_time
     self.y = self.y + self.y_velocity * delta_time
 end
+function Ball:collide()
+    self.y_velocity = self.y_velocity * (-1)
+    self.x_velocity = self.x_velocity * (-1)
+end
 function Ball:checkFloorCollision()
     return (self.y >= BOUNDS_MAX_Y or self.y <= BOUNDS_MIN_Y)
 end
-function Ball:collide()
-    self.y_velocity = self.y_velocity * (-1)
+function Ball:checkPaddleCollision(paddle)
+    if (self.x >= paddle.x) and (self.x <= (paddle.x + paddle.width)) then
+        if (self.y >= paddle.y) and (self.y <= (paddle.y + paddle.height)) then
+            return true
+        end
+    end
+
+    return false
 end
 function Ball:reset()
     -- TODO: call Ball:new or something else, as this is duplicate
@@ -119,20 +129,16 @@ function love.update(delta_time)
         player_2:move('down', delta_time)
     end
 
-    -- collision check
-    -- TODO: area vs coordinate
-    if (ball.x == player_1.x) and (ball.y == player_1.y) then
-        ball:collide()
-    elseif (ball.x == player_2.x) and (ball.y == player_2.y) then
-        ball:collide()
-    end
-
     if ball.x >= BOUNDS_MAX_X then
         player_1:incrementScore()
         ball:reset()
     elseif ball.x <= BOUNDS_MIN_X then
         player_2:incrementScore()
         ball:reset()
+    end
+
+    if ball:checkPaddleCollision(player_1) or ball:checkPaddleCollision(player_2) then
+        ball:collide()
     end
 
     ball:move(delta_time)

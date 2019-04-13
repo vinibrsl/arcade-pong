@@ -1,4 +1,7 @@
 push = require './vendor/push'
+Class = require './vendor/class'
+require 'Player'
+require 'Ball'
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
@@ -11,93 +14,12 @@ BOUNDS_MAX_Y = (VIRTUAL_HEIGHT - 20)
 BOUNDS_MIN_X = 0
 BOUNDS_MAX_X = (VIRTUAL_WIDTH)
 
-local Ball = {}
-function Ball:new()
-    o = {
-        x = VIRTUAL_WIDTH / 2 - 2,
-        y = VIRTUAL_HEIGHT / 2 - 2,
-        height = 4,
-        width = 4,
-        x_velocity = (math.random(2) == 1 and 100 or -100),
-        y_velocity = math.random(-50, 50)
-    }
-
-    setmetatable(o, self)
-    self.__index = self
-    return o
-end
-function Ball:move(delta_time)
-    if self:checkFloorCollision() then
-        self:collide()
-    end
-
-    self.x = self.x + self.x_velocity * delta_time
-    self.y = self.y + self.y_velocity * delta_time
-end
-function Ball:collide()
-    self.y_velocity = self.y_velocity * (-1)
-    self.x_velocity = self.x_velocity * (-1)
-end
-function Ball:checkFloorCollision()
-    return (self.y >= BOUNDS_MAX_Y or self.y <= BOUNDS_MIN_Y)
-end
-function Ball:checkPaddleCollision(paddle)
-    if (self.x >= paddle.x) and (self.x <= (paddle.x + paddle.width)) then
-        if (self.y >= paddle.y) and (self.y <= (paddle.y + paddle.height)) then
-            return true
-        end
-    end
-
-    return false
-end
-function Ball:reset()
-    -- TODO: call Ball:new or something else, as this is duplicate
-    self.x = VIRTUAL_WIDTH / 2 - 2
-    self.y = VIRTUAL_HEIGHT / 2 - 2
-    self.x_velocity = (math.random(2) == 1 and 100 or -100)
-    self.y_velocity = math.random(-50, 50)
-end
-function Ball:draw()
-    love.graphics.rectangle('fill', self.x, self.y, self.width, self.height)
-end
-
-local Player = {}
-function Player:new()
-    o = {
-        score = 0,
-        x = 0,
-        y = 0,
-        width = 5,
-        height = 20,
-        speed = 200
-    }
-
-    setmetatable(o, self)
-    self.__index = self
-    return o
-end
-function Player:move(direction, delta_time)
-    if direction == 'up' then
-        self.y = math.max(BOUNDS_MIN_Y, self.y + -self.speed * delta_time)
-    elseif direction == 'down' then
-        self.y = math.min(BOUNDS_MAX_Y, self.y + self.speed * delta_time)
-    end
-end
-function Player:incrementScore()
-    self.score = self.score + 1
-end
-function Player:draw()
-    love.graphics.rectangle('fill', self.x, self.y, self.width, self.height)
-end
-
 function love.load()
     math.randomseed(os.time())
 
+    love.window.setTitle('Pong')
+    love.graphics.setFont(love.graphics.newFont('assets/retro.ttf', 8))
     love.graphics.setDefaultFilter('nearest', 'nearest')
-
-    love.graphics.setFont(
-        love.graphics.newFont('assets/retro.ttf', 8)
-    )
 
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
         fullscreen = false,
@@ -105,15 +27,9 @@ function love.load()
         vsync = true
     })
 
-    player_1 = Player:new()
-    player_1.x = 10
-    player_1.y = 30
-
-    player_2 = Player:new()
-    player_2.x = (VIRTUAL_WIDTH - 10)
-    player_2.y = (VIRTUAL_HEIGHT - 50)
-
-    ball = Ball:new()
+    player_1 = Player(10, 30, 5, 20)
+    player_2 = Player((VIRTUAL_WIDTH - 10), (VIRTUAL_HEIGHT - 30), 5, 20)
+    ball = Ball((VIRTUAL_WIDTH / 2 - 2), (VIRTUAL_HEIGHT / 2 - 2), 4, 4)
 end
 
 function love.update(delta_time)

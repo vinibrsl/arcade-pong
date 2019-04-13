@@ -1,9 +1,12 @@
 GameObject = Class{
-    init = function(self, x, y, width, height)
-        self.x = x
-        self.y = y
+    init = function(self, args)
+        self.x = args.x or 0
+        self.y = args.y or 0
 
-        self.width = width
-        self.height = height
+        self.width = args.width or 0
+        self.height = args.height or 0
+
+        self.x_speed = args.x_speed or 0.0
+        self.y_speed = args.y_speed or 0.0
     end
 }

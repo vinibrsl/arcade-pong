@@ -1,7 +1,13 @@
 Player = Class{__includes = GameObject}
 
 function Player:init(x, y, width, height)
-    GameObject.init(self, x, y, width, height)
+    GameObject.init(self, {
+        x = x,
+        y = y,
+        width = width,
+        height = height
+    })
+
     self.score = 0
     self.speed = 150
 end

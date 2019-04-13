@@ -68,10 +68,11 @@ function love.update(delta_time)
         player_2:update('down', delta_time)
     end
 
-    if (ball.x + ball.width) >= BOUNDS_MAX_X then
+    local ballCollisionSide = ball:checkOutOfBoundsSide()
+    if ballCollisionSide == 'left' then
         player_1:incrementScore()
         ball:reset()
-    elseif (ball.x - ball.width) <= BOUNDS_MIN_X then
+    elseif ballCollisionSide == 'right' then
         player_2:incrementScore()
         ball:reset()
     end

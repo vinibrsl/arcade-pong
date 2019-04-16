@@ -1,96 +1,78 @@
-push = require './vendor/push'
-Class = require './vendor/class'
-require 'GameObject'
-require 'Player'
-require 'Ball'
+push = require 'vendor/push'
+Class = require 'vendor/class'
 
-WINDOW_WIDTH = 1280
-WINDOW_HEIGHT = 720
+require 'modules/Acceleratable'
+require 'modules/Positionable'
+require 'modules/Renderable'
+require 'modules/Collidable'
+require 'classes/Paddle'
+require 'classes/Ball'
 
-VIRTUAL_WIDTH = 432
-VIRTUAL_HEIGHT = 243
+WINDOW_WIDTH  = 600
+WINDOW_HEIGHT = 300
 
-BOUNDS_MIN_Y = 0
-BOUNDS_MAX_Y = (VIRTUAL_HEIGHT - 20)
-BOUNDS_MIN_X = 0
-BOUNDS_MAX_X = (VIRTUAL_WIDTH)
+VIRTUAL_WIDTH  = 500
+VIRTUAL_HEIGHT = 300
+
+PADDLE_MARGIN = 40
+
+local paddle_1 = Paddle({
+    x = PADDLE_MARGIN,
+    keybindingUp = "w",
+    keybindingDown = "s"
+})
+paddle_1:centerY()
+
+local paddle_2 = Paddle({
+    x = (VIRTUAL_WIDTH - PADDLE_MARGIN),
+    keybindingUp = "up",
+    keybindingDown = "down"
+})
+paddle_2:centerY()
+
+local ball = Ball()
 
 function love.load()
-    math.randomseed(os.time())
+    math.randomseed((os.time()))
 
-    love.window.setTitle('Pong')
-    love.graphics.setFont(love.graphics.newFont('assets/retro.ttf', 8))
     love.graphics.setDefaultFilter('nearest', 'nearest')
-
+    love.window.setTitle('Pong')
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
+        vsync = true,
         fullscreen = false,
-        resizable = false,
-        vsync = true
+        resizable = true
     })
-
-    player_1 = Player(10, 30, 5, 20)
-    player_2 = Player((VIRTUAL_WIDTH - 10), (VIRTUAL_HEIGHT - 30), 5, 20)
-    ball = Ball((VIRTUAL_WIDTH / 2 - 2), (VIRTUAL_HEIGHT / 2 - 2), 4, 4)
-end
-
-function drawHud()
-    love.graphics.printf('Pong!', 0, 20, VIRTUAL_WIDTH, 'center')
-
-    love.graphics.print(
-        tostring(player_1.score),
-        VIRTUAL_WIDTH / 2 - 50,
-        VIRTUAL_HEIGHT / 3
-    )
-
-    love.graphics.print(
-        tostring(player_2.score),
-        VIRTUAL_WIDTH / 2 + 30,
-        VIRTUAL_HEIGHT / 3
-    )
 end
 
 function love.keypressed(key)
-    if key == 'escape' then
+    if love.keyboard.isDown("escape") then
         love.event.quit()
     end
 end
 
-function love.update(delta_time)
-    if love.keyboard.isDown('w') then
-        player_1:update('up', delta_time)
-    elseif love.keyboard.isDown('s') then
-        player_1:update('down', delta_time)
+function love.resize(w, h)
+    push:resize(w, h)
+end
+
+function love.update(deltaTime)
+    paddle_1:update(deltaTime)
+    paddle_2:update(deltaTime)
+
+    if ball:checkCollision(paddle_1) or ball:checkCollision(paddle_2) then
+        ball.dx = -ball.dx
     end
 
-    if love.keyboard.isDown('up') then
-        player_2:update('up', delta_time)
-    elseif love.keyboard.isDown('down') then
-        player_2:update('down', delta_time)
-    end
-
-    local ballCollisionSide = ball:checkWallCollision()
-    if ballCollisionSide == 'left' then
-        player_1:incrementScore()
-        ball:reset()
-    elseif ballCollisionSide == 'right' then
-        player_2:incrementScore()
-        ball:reset()
-    end
-
-    if ball:checkCollision(player_1) or ball:checkCollision(player_2) then
-        ball:collide()
-    end
-
-    ball:update(delta_time)
+    ball:update(deltaTime)
 end
 
 function love.draw()
-    push:apply('start')
+    push:start()
 
-    drawHud()
-    player_1:draw()
-    player_2:draw()
-    ball:draw()
+    love.graphics.rectangle("fill", (VIRTUAL_WIDTH / 2), 0, 1, VIRTUAL_HEIGHT)
 
-    push:apply('end')
+    paddle_1:render()
+    paddle_2:render()
+    ball:render()
+
+    push:finish()
 end
